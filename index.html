@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rock Paper Scissors</title>
+    <style>
+      /* ===== RESET ===== */
+      * {
+        box-sizing: border-box;
+      }
+
+      img {
+        display: block;
+      }
+
+      /* ===== BODY & BACKGROUND ===== */
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(circle at top, #1b1f4a, #050716);
+        color: #eaf2ff;
+        font-family: "Segoe UI", system-ui, sans-serif;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        padding: 48px 24px;
+        overflow-x: hidden;
+      }
+
+      /* ===== ANIMATED SPACE GRADIENT ===== */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(
+          120deg,
+          rgba(120, 140, 255, 0.08),
+          rgba(0, 255, 255, 0.05),
+          rgba(180, 80, 255, 0.08)
+        );
+        animation: spaceMove 22s ease-in-out infinite;
+        z-index: -2;
+      }
+
+      @keyframes spaceMove {
+        0% {
+          transform: translateX(0);
+        }
+        50% {
+          transform: translateX(-6%);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      /* ===== FLOATING STARS ===== */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: radial-gradient(
+            2px 2px at 20% 30%,
+            rgba(255, 255, 255, 0.15),
+            transparent
+          ),
+          radial-gradient(
+            2px 2px at 70% 60%,
+            rgba(255, 255, 255, 0.12),
+            transparent
+          ),
+          radial-gradient(
+            1.5px 1.5px at 40% 80%,
+            rgba(255, 255, 255, 0.1),
+            transparent
+          ),
+          radial-gradient(
+            1.5px 1.5px at 80% 20%,
+            rgba(255, 255, 255, 0.1),
+            transparent
+          );
+        animation: floatStars 40s linear infinite;
+        z-index: -1;
+      }
+
+      @keyframes floatStars {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(-90px);
+        }
+      }
+
+      /* ===== TITLE ===== */
+      h1 {
+        margin-bottom: 38px;
+        font-size: 36px;
+        letter-spacing: 1.8px;
+        text-align: center;
+      }
+
+      /* ===== GAME BUTTONS ===== */
+      .js-game-button {
+        width: 138px;
+        height: 138px;
+        margin: 14px;
+        border-radius: 28px;
+        border: none;
+
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(14px);
+
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.6px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45),
+          inset 0 1px 1px rgba(255, 255, 255, 0.18);
+
+        cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      .js-game-button:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 22px 46px rgba(0, 0, 0, 0.6),
+          0 0 22px rgba(120, 180, 255, 0.35);
+      }
+
+      .js-game-button:active {
+        transform: translateY(-2px);
+      }
+
+      /* ===== BUTTON IMAGE ===== */
+      .js-game-button img {
+        width: 58px;
+        height: 58px;
+        object-fit: contain;
+        pointer-events: none;
+        opacity: 0.95;
+      }
+
+      /* ===== RESULT TEXT ===== */
+      .js-p1 {
+        margin-top: 32px;
+        font-size: 26px;
+        font-weight: 600;
+        text-shadow: 0 0 14px rgba(120, 200, 255, 0.8);
+      }
+
+      /* ===== RESULT MOVE DISPLAY ===== */
+      .js-p2 {
+        margin-top: 14px;
+        font-size: 18px;
+        opacity: 0.9;
+
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      /* images shown in result */
+      .js-p2 img {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+        opacity: 0.95;
+      }
+
+      /* ===== SCORE ===== */
+      .js-p3 {
+        margin-top: 16px;
+        font-size: 16px;
+        opacity: 0.7;
+      }
+
+      /* ===== RESET BUTTON ===== */
+      .js-reset-button {
+        margin-top: 36px;
+        padding: 12px 36px;
+        border-radius: 32px;
+        border: none;
+
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.6px;
+
+        background: rgba(255, 80, 80, 0.18);
+        color: #ffd0d0;
+
+        backdrop-filter: blur(8px);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+
+      .js-reset-button:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 80, 80, 0.28);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Rock Paper Scissors</h1>
+    <button class="js-game-button">
+      <img class="img" src="Rock.png" />Rock
+    </button>
+    <button class="js-game-button">
+      <img class="img" src="Paper.png" />Paper
+    </button>
+    <button class="js-game-button">
+      <img class="img" src="Scissors.png" />Scissors
+    </button>
+    <p class="js-p1"></p>
+    <p class="js-p2"></p>
+    <p class="js-p3"></p>
+    <button class="js-reset-button">Reset</button>
+
+    <script>
+      let score = JSON.parse(localStorage.getItem("score")) || {
+        wins: 0,
+        losses: 0,
+        ties: 0,
+      };
+
+      document
+        .querySelector(".js-reset-button")
+        .addEventListener("click", () => {
+          score.wins = 0;
+          score.losses = 0;
+          score.ties = 0;
+          localStorage.setItem("score", JSON.stringify(score));
+          document.querySelector(".js-p1").innerHTML = "";
+
+          document.querySelector(".js-p2").innerHTML = "";
+          document.querySelector(
+            ".js-p3"
+          ).innerHTML = `Score: ${score.wins} wins, ${score.losses} losses, ${score.ties} ties.`;
+        });
+
+      document.querySelectorAll(".js-game-button").forEach((buttons) => {
+        buttons.addEventListener("click", (event) => {
+          const random = Math.random();
+          let computerMove;
+          if (random < 1 / 3) {
+            computerMove = "Rock";
+          } else if (random > 1 / 3 && random < 2 / 3) {
+            computerMove = "Paper";
+          } else if (random > 2 / 3) {
+            computerMove = "Scissors";
+          }
+
+          let playerMove = event.target.innerText;
+
+          let result;
+
+          if (playerMove === computerMove) {
+            result = "Tie";
+          } else if (
+            (playerMove === "Rock" && computerMove === "Scissors") ||
+            (playerMove === "Paper" && computerMove === "Rock") ||
+            (playerMove === "Scissors" && computerMove === "Paper")
+          ) {
+            result = "You Won";
+          } else {
+            result = "You Lost";
+          }
+
+          if (result === "You Won") {
+            score.wins++;
+          }
+          if (result === "You Lost") {
+            score.losses++;
+          }
+          if (result === "Tie") {
+            score.ties++;
+          }
+
+          localStorage.setItem("score", JSON.stringify(score));
+          document.querySelector(".js-p1").innerHTML = result;
+
+          document.querySelector(".js-p2").innerHTML = `
+          You
+          <img src="${playerMove}.png" class="img">
+          <img src="${computerMove}.png" class="img">
+          Computer
+        `;
+          document.querySelector(
+            ".js-p3"
+          ).innerHTML = `Score: ${score.wins} wins, ${score.losses} losses, ${score.ties} ties.`;
+        });
+      });
+    </script>
+  </body>
+</html>
